@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/bootstrap/bootstrap.min.css">
+    <script src="lib/jquery/jquery-3.1.1.min.js"></script>
+    <script src="lib/angular/angular.min.js"></script>
+    <script src="lib/bootstrap/bootstrap.min.js"></script>
+    <script type="text/javascript">
+        angular.module('myapp', [])
+                .controller('BookController', ['$scope', 'AddBookService', function($scope, AddBookService) {
+                    $scope.books = AddBookService.books;
+                    $scope.$on('update-books', function(event) {
+                        $scope.books = AddBookService.books;
+
+                        //在AngularJS上下文之外的任何地方修改了model，那么你就需要通过手动调用$apply()来通知AngularJS
+                        $scope.$apply();
+                    });
+                }])
+                .factory('AddBookService', ['$rootScope', function($rootScope) {
+                    tmp = {
+                        books : [
+                            {'name' : 'The Adventures of Tom Sawyer', 'author': 'Mark Twain'},
+                            {'name' : 'Robinson Crusoe', 'author': 'Daniel Defoe'},
+                            {'name' : 'A Ghost Story', 'author': 'Mark Twain'}
+                        ],
+                        addBook : function(book) {
+                            tmp.books.push(book);
+                            $rootScope.$broadcast('update-books');
+                        }
+                    };
+                    return tmp;
+                }])
+                .directive('addBookBtn', ['AddBookService', function(AddBookService) {
+                    return {
+                        restrict: 'E',
+                        replace: false,
+                        template: '<input type="text" class="input-small" ng-model="bookName" ' +
+                        'placeholder="BookName"><br/><br/>' +
+                        '<input type="text" class="input-small" ng-model="bookAuthor" ' +
+                        'placeholder="BookAuthor"><br/><br/>' +
+                        '<button class="btn btn-mini btn-primary">Add Book</button>',
+                        link: function(scope, elem,attrs) {
+                            scope.bookName = '';
+                            scope.bookAuthor = '';
+                            //elem = add-book-btn
+                            elem.children('button').bind('click', function() {
+                                if (scope.bookName != '' && scope.bookAuthor != '') {
+                                    AddBookService.addBook({'name': scope.bookName, 'author':scope.bookAuthor});
+                                    scope.bookName = '';
+                                    scope.bookAuthor = '';
+                                    scope.$apply();
+                                }
+                            });
+                        }
+                    };
+                }]);
+    </script>
+    <style type="text/css">
+    </style>
+</head>
+<body ng-app="myapp">
+<div ng-controller="BookController">
+    <table class="table table-bordered table-hover table-condensed">
+        <caption>Book</caption>
+        <thead>
+        <tr>
+            <th>Name</th>
+            <th>Author</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr ng-repeat="book in books">
+            <td>{{book.name}}</td>
+            <td>{{book.author}}</td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+<add-book-btn></add-book-btn>
+</body>
+</html>

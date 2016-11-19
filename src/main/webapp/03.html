@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script src="lib/angular/angular.min.js"></script>
+    <link rel="stylesheet" href="css/highlight/styles/default.css">
+    <script src="lib/highlight/highlight.pack.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+    <title>表达式</title>
+    <div ng-app="" ng-init="quantity=1;cost=30; student={firstname:'Mahesh',lastname:'Parashar',rollno:101};marks=[80,90,75,73,60]">
+        <p>Hello {{student.firstname + " " + student.lastname}}!</p>
+        <p>Expense on Books : {{cost * quantity}} Rs</p>
+        <p>Roll No: {{student.rollno}}</p>
+        <p>Marks(Math): {{marks[3]}}</p>
+    </div>
+    <pre><code class="html">
+        &lt;div ng-app="" ng-init="quantity=1;cost=30; student={firstname:'Mahesh',lastname:'Parashar',rollno:101};marks=[80,90,75,73,60]"&gt;
+            &lt;p&gt;Hello {{student.firstname + " " + student.lastname}}!&lt;/p&gt;
+            &lt;p&gt;Expense on Books : {{cost * quantity}} Rs&lt;/p&gt;
+            &lt;p&gt;Roll No: {{student.rollno}}&lt;/p&gt;
+            &lt;p&gt;Marks(Math): {{marks[3]}}&lt;/p&gt;
+        &lt;/div&gt;
+    </code></pre>
+</head>
+<body>
+
+</body>
+</html>
