@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<!--
+ *  Copyright (c) 2015 The WebRTC project authors. All Rights Reserved.
+ *
+ *  Use of this source code is governed by a BSD-style license
+ *  that can be found in the LICENSE file in the root of the source
+ *  tree.
+-->
+<html>
+<head>
+
+    <meta charset="utf-8">
+    <meta name="description" content="WebRTC code samples">
+    <meta name="viewport" content="width=device-width, user-scalable=yes, initial-scale=1, maximum-scale=1">
+    <meta itemprop="description" content="Client-side WebRTC code samples">
+    <meta itemprop="image" content="images/webrtc-icon-192x192.png">
+    <meta itemprop="name" content="WebRTC code samples">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta id="theme-color" name="theme-color" content="#ffffff">
+
+    <base target="_blank">
+
+    <title>摄像头的周期性调用拍照并上传照片示例</title>
+
+    <link rel="icon" sizes="192x192" href="images/webrtc-icon-192x192.png">
+    <link href="css/css.css" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="css/main.css">
+
+</head>
+
+<body>
+<div id="container">
+<!--三个select是配置摄像头参数用的，可以隐藏掉，但不能删掉-->
+    <div class="select" hidden>
+        <label for="audioSource" hidden>Audio input source: </label><select id="audioSource" hidden></select>
+    </div>
+    <div class="select" hidden>
+        <label for="audioOutput" hidden>Audio output destination: </label><select id="audioOutput" hidden></select>
+    </div>
+    <div class="select" hidden>
+        <label for="videoSource" hidden>Video source: </label><select id="videoSource" hidden></select>
+    </div>
+
+    <video id="video" autoplay hidden></video><!--可以把摄像头输出隐藏掉-->
+
+    <canvas id="canvas" width="640" height="480"></canvas><!--这个canvas应该被隐藏掉，调试时可以打开，是每隔一段时间的拍照结果-->
+</div>
+
+<script src="js/adapter.js"></script>
+<script src="js/common.js"></script>
+<script src="js/main.js"></script>
+
+<script src="js/ga.js"></script>
+<script src="js/jquery-3.1.1.min.js"></script>
+<script>
+    var video_g;
+    var context_g;
+    var canvas_g;
+    function initGlobal(){
+        //初始化所有资源，包括video、canvas，并根据navigator的属性设置video的源，此时已经打开摄像头
+        video_g=document.getElementById("video");
+        canvas_g = document.getElementById("canvas");
+        context_g=canvas_g.getContext("2d");
+        var errocb=function(){
+            console.log("sth srong");
+        };
+        if(navigator.getUserMedia){
+            navigator.getUserMedia({"video":true},function(stream){
+                video.src=stream;
+                video.play();
+            },errocb);
+        }else if(navigator.webkitGetUserMedia){
+            navigator.webkitGetUserMedia({"video":true},function(stream){
+                video.src=window.webkitURL.createObjectURL(stream);
+                video.play();
+            },errocb);
+        }
+    }
+
+    function DrawPic() {//利用摄像头拍照并保存在convas中
+        context_g.drawImage(video_g,0,0,640,480);
+    }
+
+    function UploadPic() {//将canvas中的内容进行上传，此处究竟选用哪种上传方式，由开发决定，建议使用ajax的形式上传，示例代码在注释中
+        var Pic = canvas_g.toDataURL("image/png");
+        Pic = Pic.replace(/^data:image\/(png|jpg);base64,/, "");
+        console.info("upload" + (new Date()).valueOf());
+        //    $.ajax({
+        //      type: 'POST',
+        //      url: 'Save_Picture.aspx/UploadPic',
+        //      data: '{ "imageData" : "' + Pic + '" }',
+        //      contentType: 'application/json; charset=utf-8',
+        //      dataType: 'json',
+        //      success: function (msg) {
+        //        alert("Done, Picture Uploaded.");
+        //      }
+        //    });
+    }
+
+    function capture(){
+        DrawPic();
+        UploadPic();
+    }
+
+    function waitingCamera()
+    {
+        initGlobal();//调用初始化
+        setInterval("capture()",5000);//周期性调用拍照、上传，此处的周期建议设置为5000，也就是每5秒上传一张照片
+    }
+    window.onload=waitingCamera;//页面加载时调用这个方法
+</script>
+</body>
+</html>
