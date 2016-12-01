@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>测试网页截图</title>
+</head>
+<body>
+<h1>tetetete</h1>
+<button onclick="capture()">试一下</button>
+<h1></h1>
+<canvas id="canvas"></canvas>
+</body>
+<script src="js/html2canvas.js"></script>
+<script>
+    var canvas_g ;
+    var context_g;
+    function capture() {
+        DrawPic();
+        UploadPic();
+    }
+
+    function DrawPic() {//利用html2canvas截图并保存在convas中
+        context_g.clearRect(0,0,canvas_g.width,canvas_g.height);
+        html2canvas(document.body, {
+            canvas:canvas_g
+        });
+    }
+
+    function UploadPic() {//将canvas中的内容进行上传，此处究竟选用哪种上传方式，由开发决定，建议使用ajax的形式上传，示例代码在注释中
+        var Pic = canvas_g.toDataURL("image/png");
+        Pic = Pic.replace(/^data:image\/(png|jpg);base64,/, "");
+        console.info("upload" + (new Date()).valueOf());
+        //    $.ajax({
+        //      type: 'POST',
+        //      url: 'Save_Picture.aspx/UploadPic',
+        //      data: '{ "imageData" : "' + Pic + '" }',
+        //      contentType: 'application/json; charset=utf-8',
+        //      dataType: 'json',
+        //      success: function (msg) {
+        //        alert("Done, Picture Uploaded.");
+        //      }
+        //    });
+    }
+
+    function initGlobal(){
+        canvas_g = document.getElementById("canvas");
+        context_g=canvas_g.getContext("2d");
+    }
+
+    function waitingHtml2canvas()
+    {
+        initGlobal();//调用初始化
+        setInterval("capture()",5000);//周期性调用网页截图、上传，此处的周期建议设置为5000，也就是每5秒上传一张照片
+    }
+    window.onload=waitingHtml2canvas;//页面加载时调用这个方法
+</script>
+</html>
