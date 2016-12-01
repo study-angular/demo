@@ -1,0 +1,101 @@
+<html>
+<head>
+    <title>angular表单验证</title>
+    <meta charset="UTF-8">
+    <script src="lib/angular/angular.min.js"></script>
+    <link rel="stylesheet" href="css/highlight/styles/default.css">
+    <script src="lib/highlight/highlight.pack.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+    <style>
+        table, th , td {
+            border: 1px solid grey;
+            border-collapse: collapse;
+            padding: 5px;
+        }
+        table tr:nth-child(odd) {
+            background-color: #f2f2f2;
+        }
+        table tr:nth-child(even) {
+            background-color: #ffffff;
+        }
+    </style>
+</head>
+<body>
+<h2>angular表单验证</h2>
+<div ng-app="" ng-controller="studentController">
+    <form name="studentForm" novalidate>
+        <table border="0">
+            <tr><td>Enter first name:</td><td><input name="firstname" type="text" ng-model="firstName" required>
+                <span style="color:red" ng-show="studentForm.firstname.$dirty && studentForm.firstname.$invalid">
+                    <span ng-show="studentForm.firstname.$error.required">First Name is required.</span>
+                </span>
+            </td></tr>
+            <tr><td>Enter last name: </td><td><input name="lastname"  type="text" ng-model="lastName" required>
+                <span style="color:red" ng-show="studentForm.lastname.$dirty && studentForm.lastname.$invalid">
+                    <span ng-show="studentForm.lastname.$error.required">Last Name is required.</span>
+                </span>
+            </td></tr>
+            <tr><td>Email: </td><td><input name="email" type="email" ng-model="email" length="100" required>
+                <span style="color:red" ng-show="studentForm.email.$dirty && studentForm.email.$invalid">
+                    <span ng-show="studentForm.email.$error.required">Email is required.</span>
+                    <span ng-show="studentForm.email.$error.email">Invalid email address.</span>
+                </span>
+            </td></tr>
+            <tr>
+                <td><button ng-click="reset()">Reset</button></td>
+                <td><button
+                    ng-disabled="studentForm.firstname.$dirty && studentForm.firstname.$invalid ||
+			            studentForm.lastname.$dirty && studentForm.lastname.$invalid ||
+			            studentForm.email.$dirty && studentForm.email.$invalid"
+                    ng-click="submit()">Submit</button>
+                </td>
+            </tr>
+        </table>
+    </form>
+</div>
+<pre><code class="html">
+&lt;div ng-app="" ng-controller="studentController"&gt;
+    &lt;form name="studentForm" novalidate&gt;
+        &lt;table border="0"&gt;
+            &lt;tr&gt;&lt;td&gt;Enter first name:&lt;/td&gt;&lt;td&gt;&lt;input name="firstname" type="text" ng-model="firstName" required&gt;
+                &lt;span style="color:red" ng-show="studentForm.firstname.$dirty && studentForm.firstname.$invalid"&gt;
+                    &lt;span ng-show="studentForm.firstname.$error.required"&gt;First Name is required.&lt;/span&gt;
+                &lt;/span&gt;
+            &lt;/td&gt;&lt;/tr&gt;
+            &lt;tr&gt;&lt;td&gt;Enter last name: &lt;/td&gt;&lt;td&gt;&lt;input name="lastname"  type="text" ng-model="lastName" required&gt;
+                &lt;span style="color:red" ng-show="studentForm.lastname.$dirty && studentForm.lastname.$invalid"&gt;
+                    &lt;span ng-show="studentForm.lastname.$error.required"&gt;Last Name is required.&lt;/span&gt;
+                &lt;/span&gt;
+            &lt;/td&gt;&lt;/tr&gt;
+            &lt;tr&gt;&lt;td&gt;Email: &lt;/td&gt;&lt;td&gt;&lt;input name="email" type="email" ng-model="email" length="100" required&gt;
+                &lt;span style="color:red" ng-show="studentForm.email.$dirty && studentForm.email.$invalid"&gt;
+                    &lt;span ng-show="studentForm.email.$error.required"&gt;Email is required.&lt;/span&gt;
+                    &lt;span ng-show="studentForm.email.$error.email"&gt;Invalid email address.&lt;/span&gt;
+                &lt;/span&gt;
+            &lt;/td&gt;&lt;/tr&gt;
+            &lt;tr&gt;
+                &lt;td&gt;&lt;button ng-click="reset()"&gt;Reset&lt;/button&gt;&lt;/td&gt;
+                &lt;td&gt;&lt;button
+                        ng-disabled="studentForm.firstname.$dirty && studentForm.firstname.$invalid ||
+			            studentForm.lastname.$dirty && studentForm.lastname.$invalid ||
+			            studentForm.email.$dirty && studentForm.email.$invalid"
+                        ng-click="submit()"&gt;Submit&lt;/button&gt;
+                &lt;/td&gt;
+            &lt;/tr&gt;
+        &lt;/table&gt;
+    &lt;/form&gt;
+&lt;/div&gt;
+</code></pre>
+<p>更多表单错误事件处理参考<a href="http://www.riafan.com/angularjs-error-handling-with-forms/">这里</a></p>
+<script>
+    function studentController($scope) {
+        $scope.reset = function(){
+            $scope.firstName = "Mahesh";
+            $scope.lastName = "Parashar";
+            $scope.email = "MaheshParashar@yiibai.com";
+        }
+        $scope.reset();
+    }
+</script>
+</body>
+</html>
